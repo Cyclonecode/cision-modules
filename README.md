@@ -1,2 +1,2 @@
-# cision-bundle
+# Cision modules
 Cision client modules integrations

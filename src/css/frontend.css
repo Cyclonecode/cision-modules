@@ -1,0 +1,40 @@
+.cision-ticker-wrapper {
+    padding-bottom: 20px;
+}
+.cision-ticker {
+    width: 100%;
+    border: 1px solid red;
+    text-align:center;
+    width: 100%;
+    width: 100vw;
+
+
+    position: absolute;
+    /*bottom: 0;*/
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    /*background-color: #f6f8f8;*/
+    /*padding: 1.25rem 2rem;*/
+}
+.cision-ticker ul {
+    list-style: none;
+}
+.cision-ticker ul li {
+    display: inline-block;
+    padding: 10px;
+}
+.cision-ticker ul li span {
+    display: block;
+    font-size: 12px;
+    text-align: center;
+}
+@media screen and (max-width: 768px) {
+    .cision-ticker ul li {
+        display: block;
+    }
+}
