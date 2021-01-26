@@ -108,4 +108,5 @@ return array(
     'Composer\\Installers\\ZikulaInstaller' => $vendorDir . '/composer/installers/src/Composer/Installers/ZikulaInstaller.php',
     'Cyclonecode\\Plugin\\Settings' => $vendorDir . '/cyclonecode/plugin/src/Plugin/Settings.php',
     'Cyclonecode\\Plugin\\Singleton' => $vendorDir . '/cyclonecode/plugin/src/Plugin/Singleton.php',
+    'Cyclonecode\\Plugin\\Widget' => $vendorDir . '/cyclonecode/plugin/src/Plugin/Widget.php',
 );

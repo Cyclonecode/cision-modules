@@ -133,6 +133,7 @@ class ComposerStaticInit717989190eca6c3b09c05378ad5b8625
         'Composer\\Installers\\ZikulaInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ZikulaInstaller.php',
         'Cyclonecode\\Plugin\\Settings' => __DIR__ . '/..' . '/cyclonecode/plugin/src/Plugin/Settings.php',
         'Cyclonecode\\Plugin\\Singleton' => __DIR__ . '/..' . '/cyclonecode/plugin/src/Plugin/Singleton.php',
+        'Cyclonecode\\Plugin\\Widget' => __DIR__ . '/..' . '/cyclonecode/plugin/src/Plugin/Widget.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
