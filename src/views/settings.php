@@ -72,6 +72,15 @@
             </tr>
             <tr>
                 <th scope="row">
+                    <label for="excludeCss"><?php _e('Exclude CSS', self::TEXT_DOMAIN); ?></label>
+                </th>
+                <td>
+                    <input type="checkbox" name="excludeCss"<?php checked($this->settings->get('excludeCss')); ?> />
+                    <p class="description"><?php echo __('Do not load stylesheet.', self::TEXT_DOMAIN); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
                     <label for="cacheTTL"><?php _e('Cache', self::TEXT_DOMAIN); ?></label>
                 </th>
                 <td>

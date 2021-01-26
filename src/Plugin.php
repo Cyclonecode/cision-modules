@@ -7,7 +7,7 @@ use Cyclonecode\Plugin\Settings;
 
 class Plugin extends Singleton
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.0';
     const SETTINGS_NAME = 'cision_modules';
     const TEXT_DOMAIN = 'cision-modules';
     const PARENT_MENU_SLUG = 'tools.php';
@@ -53,12 +53,13 @@ class Plugin extends Singleton
      */
     public function addActions()
     {
-        add_action('admin_menu', array($this, 'addMenu'));
-        add_action('admin_post_cision_modules_save_settings', array($this, 'saveSettings'));
-        add_action('admin_enqueue_scripts', array($this, 'addScripts'));
-        add_action('wp_enqueue_scripts', array($this, 'addFrontendScripts'));
-        if (!is_admin()) {
+        if (is_admin()) {
+            add_action('admin_menu', array($this, 'addMenu'));
+            add_action('admin_post_cision_modules_save_settings', array($this, 'saveSettings'));
+            // add_action('admin_enqueue_scripts', array($this, 'addScripts'));
+        } else {
             add_shortcode('cision-ticker', array($this, 'doTicker'));
+            add_action('wp_enqueue_scripts', array($this, 'addFrontendScripts'));
         }
     }
 
@@ -67,9 +68,11 @@ class Plugin extends Singleton
      */
     public function addFilters()
     {
-        add_filter('admin_footer_text', array($this, 'adminFooter'));
-        add_filter('plugin_action_links', array($this, 'addActionLinks'), 10, 2);
-        add_filter('plugin_row_meta', array($this, 'filterPluginRowMeta'), 10, 4);
+        if (is_admin()) {
+            add_filter('admin_footer_text', array($this, 'adminFooter'));
+            add_filter('plugin_action_links', array($this, 'addActionLinks'), 10, 2);
+            add_filter('plugin_row_meta', array($this, 'filterPluginRowMeta'), 10, 4);
+        }
     }
 
     /**
@@ -79,15 +82,20 @@ class Plugin extends Singleton
      */
     public function doTicker($args)
     {
-        $tickers = $this->getTicker();
+        if (!$this->settings->get('excludeCss')) {
+            wp_enqueue_style('frontend');
+        }
+        $tickers = $this->getTickers();
         ob_start();
         ?>
         <div class="cision-ticker-wrapper">
             <div class="cision-ticker">
                 <ul>
                     <?php foreach ($tickers->Instruments as $ticker) : ?>
-                    <li><?php echo $ticker->TickerSymbol; ?></li>
-                    <li><?php echo number_format($ticker->Quotes[0]->Price, $this->settings->get('decimalPrecision'), $this->settings->get('decimalSeparator'), $this->settings->get('thousandSeparator')); ?></li>
+                    <li>
+                        <?php echo number_format($ticker->Quotes[0]->Price, $this->settings->get('decimalPrecision'), $this->settings->get('decimalSeparator'), $this->settings->get('thousandSeparator')); ?>
+                        <span><?php echo $ticker->TickerSymbol; ?></span>
+                    </li>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -97,12 +105,11 @@ class Plugin extends Singleton
     }
 
     /**
-     * Get ticker.
+     * Get tickers.
      *
-     * @param array $options
-     * @return mixed|string
+     * @return mixed|null
      */
-    protected function getTicker($options = array())
+    protected function getTickers()
     {
         $data = get_transient('cision_modules_ticker');
         if (!$data) {
@@ -158,14 +165,7 @@ class Plugin extends Singleton
 
     public function addFrontendScripts($hook)
     {
-        wp_enqueue_script(
-            'frontend',
-            plugin_dir_url(__FILE__) . 'js/frontend.js',
-            array('jquery'),
-            self::VERSION,
-            true
-        );
-        wp_enqueue_style(
+        wp_register_style(
             'frontend',
             plugin_dir_url(__FILE__) . 'css/frontend.css',
             array(),
@@ -193,8 +193,10 @@ class Plugin extends Singleton
               'decimalPrecision' => 2,
               'decimalSeparator' => '.',
               'thousandSeparator' => '.',
-              'cacheTTL' => 300, // 5 minutes
+              // 'dateFormatOptions' => 'YY-MM-DD HH:ii:ss',
+              'cacheTTL' => 300,
               'serviceEndpoint' => 'https://publish.ne.cision.com/papi/',
+              'excludeCss' => false,
             );
 
             // Set defaults.
@@ -310,7 +312,7 @@ class Plugin extends Singleton
                     )
                 );
                 $this->settings->dateFormatOptions = filter_input(
-                        INPUT_POST,
+                    INPUT_POST,
                     'dateFormatOptions',
                     FILTER_VALIDATE_REGEXP,
                     array(
@@ -321,7 +323,7 @@ class Plugin extends Singleton
                 );
                 // $this->settings->get('decimalSeparator'), $this->settings->get('thousandSeparator')
                 $this->settings->decimalSeparator = filter_input(
-                        INPUT_POST,
+                    INPUT_POST,
                     'decimalSeparator',
                     FILTER_SANITIZE_STRING
                 );
@@ -340,6 +342,11 @@ class Plugin extends Singleton
                                     'default' => 0,
                             ),
                     )
+                );
+                $this->settings->excludeCss = filter_input(
+                    INPUT_POST,
+                    'excludeCss',
+                    FILTER_VALIDATE_BOOLEAN
                 );
                 delete_transient('cision_modules_ticker');
                 $this->settings->save();
