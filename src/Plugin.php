@@ -7,7 +7,7 @@ use Cyclonecode\Plugin\Settings;
 
 class Plugin extends Singleton
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
     const SETTINGS_NAME = 'cision_modules';
     const TEXT_DOMAIN = 'cision-modules';
     const PARENT_MENU_SLUG = 'tools.php';
@@ -79,16 +79,16 @@ class Plugin extends Singleton
      */
     public function doTicker($args)
     {
-        $ticker = $this->getTicker();
+        $tickers = $this->getTicker();
         ob_start();
         ?>
         <div class="cision-ticker-wrapper">
             <div class="cision-ticker">
                 <ul>
-                    <li>8 109Mkr<span>börsvärde</span></li>
-                    <li>680,00 SEK<span>stamaktie</span></li>
-                    <li>114,00 SEK<span>preferensaktie</span></li>
-                    <li>35,8 %<span>IRR stamaktieägare</span></li>
+                    <?php foreach ($tickers->Instruments as $ticker) : ?>
+                    <li><?php echo $ticker->TickerSymbol; ?></li>
+                    <li><?php echo number_format($ticker->Quotes[0]->Price, $this->settings->get('decimalPrecision'), $this->settings->get('decimalSeparator'), $this->settings->get('thousandSeparator')); ?></li>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
@@ -110,7 +110,7 @@ class Plugin extends Singleton
             $data = wp_remote_retrieve_body($response);
             set_transient('cision_modules_ticker', $data, $this->settings->get('cacheTTL'));
         }
-        return $data;
+        return $data ? json_decode($data) : null;
     }
 
     /**
@@ -189,7 +189,13 @@ class Plugin extends Singleton
     public function checkForUpgrade()
     {
         if (version_compare($this->settings->get('version'), self::VERSION, '<')) {
-            $defaults = array();
+            $defaults = array(
+              'decimalPrecision' => 2,
+              'decimalSeparator' => '.',
+              'thousandSeparator' => '.',
+              'cacheTTL' => 300, // 5 minutes
+              'serviceEndpoint' => 'https://publish.ne.cision.com/papi/',
+            );
 
             // Set defaults.
             foreach ($defaults as $key => $value) {
@@ -301,6 +307,38 @@ class Plugin extends Singleton
                             'min_range' => 1,
                             'default' => 300,
                         )
+                    )
+                );
+                $this->settings->dateFormatOptions = filter_input(
+                        INPUT_POST,
+                    'dateFormatOptions',
+                    FILTER_VALIDATE_REGEXP,
+                    array(
+                            'options' => array(
+                                'regex' => '//',
+                            )
+                    )
+                );
+                // $this->settings->get('decimalSeparator'), $this->settings->get('thousandSeparator')
+                $this->settings->decimalSeparator = filter_input(
+                        INPUT_POST,
+                    'decimalSeparator',
+                    FILTER_SANITIZE_STRING
+                );
+                $this->settings->thousandSeparator = filter_input(
+                    INPUT_POST,
+                    'thousandSeparator',
+                    FILTER_SANITIZE_STRING
+                );
+                $this->settings->decimalPrecision = filter_input(
+                    INPUT_POST,
+                    'decimalPrecision',
+                    FILTER_VALIDATE_INT,
+                    array(
+                            'options' => array(
+                                    'min_range' => 0,
+                                    'default' => 0,
+                            ),
                     )
                 );
                 delete_transient('cision_modules_ticker');
