@@ -1,3 +1,12 @@
+<?php
+$tickers = $this->getTickers();
+$labels = $this->settings->get('label');
+if (!is_array($labels) || ($tickers && count($labels) !== count($tickers->Instruments))) {
+    foreach ($tickers->Instruments as $key => $ticker) {
+        $labels[] = $ticker->TickerSymbol;
+    }
+}
+?>
 <div class="wrap">
     <?php settings_errors(); ?>
     <h1><?php _e('Cision modules', self::TEXT_DOMAIN); ?></h1>
@@ -68,6 +77,48 @@
                 <td>
                     <input type="number" class="regular-text" name="decimalPrecision" value="<?php echo $this->settings->get('decimalPrecision'); ?>" />
                     <p class="description"><?php echo __('Precision for decimals.', self::TEXT_DOMAIN); ?></p>
+                </td>
+            </tr>
+            <?php if ($tickers) : ?>
+            <tr>
+                <th scope="row">
+                    <label for="labels"><?php _e('Labels', self::TEXT_DOMAIN); ?></label>
+                </th>
+                <td>
+                    <?php foreach ($tickers->Instruments as $key => $ticker): ?>
+                        <?php echo $ticker->TickerName; ?>: <br /><input type="text" class="regular-text" name="label[]" value="<?php echo $labels[$key] ?>" /><br />
+                    <?php endforeach; ?>
+                    <p class="description"><?php echo __('Ticker labels.', self::TEXT_DOMAIN); ?></p>
+                </td>
+            </tr>
+            <?php endif; ?>
+            <!--
+            <tr>
+                <th scope="row">
+                    <label for="displayVolume"><?php _e('Volume', self::TEXT_DOMAIN); ?></label>
+                </th>
+                <td>
+                    <input type="checkbox" name="displayVolume"<?php checked($this->settings->get('displayVolume')); ?> />
+                    <p class="description"><?php echo __('Display volume.', self::TEXT_DOMAIN); ?></p>
+                </td>
+            </tr>
+            -->
+            <tr>
+                <th scope="row">
+                    <label for="noBackground"><?php _e('Transparent', self::TEXT_DOMAIN); ?></label>
+                </th>
+                <td>
+                    <input type="checkbox" name="noBackground"<?php checked($this->settings->get('noBackground')); ?> />
+                    <p class="description"><?php echo __('Do not use any background color.', self::TEXT_DOMAIN); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="backgroundColor"><?php _e('Background color', self::TEXT_DOMAIN); ?></label>
+                </th>
+                <td>
+                    <input type="color" name="backgroundColor" value="<?php echo($this->settings->get('backgroundColor')); ?>" />
+                    <p class="description"><?php echo __('Background color for ticker.', self::TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
             <tr>

@@ -56,7 +56,6 @@ class Plugin extends Singleton
         if (is_admin()) {
             add_action('admin_menu', array($this, 'addMenu'));
             add_action('admin_post_cision_modules_save_settings', array($this, 'saveSettings'));
-            // add_action('admin_enqueue_scripts', array($this, 'addScripts'));
         } else {
             add_shortcode('cision-ticker', array($this, 'doTicker'));
             add_action('wp_enqueue_scripts', array($this, 'addFrontendScripts'));
@@ -89,13 +88,24 @@ class Plugin extends Singleton
         ob_start();
         ?>
         <div class="cision-ticker-wrapper">
-            <div class="cision-ticker">
+            <div class="cision-ticker"<?php if(!$this->settings->get('excludeCss') && !$this->settings->get('noBackground')) : ?> style="background-color: <?php echo $this->settings->get('backgroundColor'); ?>"<?php endif; ?>>
                 <ul>
-                    <?php foreach ($tickers->Instruments as $ticker) : ?>
+                    <?php foreach ($tickers->Instruments as $key => $ticker) : ?>
                     <li>
-                        <?php echo number_format($ticker->Quotes[0]->Price, $this->settings->get('decimalPrecision'), $this->settings->get('decimalSeparator'), $this->settings->get('thousandSeparator')); ?>
-                        <span><?php echo $ticker->TickerSymbol; ?></span>
+                        <?php echo number_format(
+                                $ticker->Quotes[0]->Price,
+                                $this->settings->get('decimalPrecision'),
+                                $this->settings->get('decimalSeparator'),
+                                $this->settings->get('thousandSeparator')
+                        ); ?> <?php echo $ticker->TradeCurrency; ?>
+                        <span><?php echo $this->settings->get('label')[$key]; ?></span>
                     </li>
+<!--                        --><?php //if ($this->settings->get('displayVolume')) : ?>
+<!--                            <li>-->
+<!--                                --><?php //echo $ticker->Quotes[0]->Quantity; ?>
+<!--                                <span>--><?php //echo __('Volume', self::TEXT_DOMAIN); ?><!--</span>-->
+<!--                            </li>-->
+<!--                        --><?php //endif; ?>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -114,8 +124,12 @@ class Plugin extends Singleton
         $data = get_transient('cision_modules_ticker');
         if (!$data) {
             $response = wp_safe_remote_request(trailingslashit($this->settings->get('serviceEndpoint')) . 'Ticker/' . $this->settings->get('apiKey'));
-            $data = wp_remote_retrieve_body($response);
-            set_transient('cision_modules_ticker', $data, $this->settings->get('cacheTTL'));
+            if (!is_wp_error($response) && ($code = wp_remote_retrieve_response_code($response)) && $code === 200 || $code === 201) {
+                $data = wp_remote_retrieve_body($response);
+                set_transient('cision_modules_ticker', $data, $this->settings->get('cacheTTL'));
+            } else {
+                $data = null;
+            }
         }
         return $data ? json_decode($data) : null;
     }
@@ -154,11 +168,11 @@ class Plugin extends Singleton
             return $plugin_meta;
         }
 
-        $plugin_meta[] = sprintf(
-            '<a href="%1$s"><span class="dashicons dashicons-star-filled" aria-hidden="true" style="font-size:14px;line-height:1.3"></span>%2$s</a>',
-            'https://github.com/sponsors/cyclonecode',
-            esc_html_x('Sponsor', 'verb', 'cision-modules')
-        );
+//        $plugin_meta[] = sprintf(
+//            '<a href="%1$s"><span class="dashicons dashicons-star-filled" aria-hidden="true" style="font-size:14px;line-height:1.3"></span>%2$s</a>',
+//            'https://github.com/sponsors/cyclonecode',
+//            esc_html_x('Sponsor', 'verb', 'cision-modules')
+//        );
 
         return $plugin_meta;
     }
@@ -197,6 +211,12 @@ class Plugin extends Singleton
               'cacheTTL' => 300,
               'serviceEndpoint' => 'https://publish.ne.cision.com/papi/',
               'excludeCss' => false,
+              'backgroundColor' => '#ffffff',
+              'noBackground' => fasle,
+              'labelBaseStock' => __('stamaktie', self::TEXT_DOMAIN),
+              'labelPreferenceStock' => __('preferensaktie', self::TEXT_DOMAIN),
+              'label' => array(),
+              'displayVolume' => false
             );
 
             // Set defaults.
@@ -228,6 +248,8 @@ class Plugin extends Singleton
     public static function delete()
     {
         delete_option(self::SETTINGS_NAME);
+        delete_transient('cision_modules_ticker');
+        delete_transient('cision_modules_settings_errors');
     }
 
     /**
@@ -321,7 +343,6 @@ class Plugin extends Singleton
                             )
                     )
                 );
-                // $this->settings->get('decimalSeparator'), $this->settings->get('thousandSeparator')
                 $this->settings->decimalSeparator = filter_input(
                     INPUT_POST,
                     'decimalSeparator',
@@ -346,6 +367,33 @@ class Plugin extends Singleton
                 $this->settings->excludeCss = filter_input(
                     INPUT_POST,
                     'excludeCss',
+                    FILTER_VALIDATE_BOOLEAN
+                );
+                $this->settings->noBackground = filter_input(
+                        INPUT_POST,
+                    'noBackground',
+                    FILTER_VALIDATE_BOOLEAN
+                );
+                $this->settings->backgroundColor = filter_input(
+                    INPUT_POST,
+                    'backgroundColor',
+                    FILTER_VALIDATE_REGEXP,
+                    array(
+                            'options' => array(
+                                    'regexp' => '/\#[a-fA-F0-9]{6}/',
+                            )
+                    )
+                );
+                // var_dump($_POST['label']);exit;
+                $this->settings->label = filter_input(
+                    INPUT_POST,
+                    'label',
+                    FILTER_SANITIZE_STRING,
+                    FILTER_REQUIRE_ARRAY
+                );
+                $this->settings->displayVolume = filter_input(
+                        INPUT_POST,
+                    'displayVolume',
                     FILTER_VALIDATE_BOOLEAN
                 );
                 delete_transient('cision_modules_ticker');

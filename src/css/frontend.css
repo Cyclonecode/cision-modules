@@ -4,7 +4,6 @@
 .cision-ticker {
     text-align:center;
     position: absolute;
-    /*bottom: 0;*/
     left: 0;
     right: 0;
     width: 100%;
@@ -12,19 +11,16 @@
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    background-color: #f6f8f8;
     padding: 1.25rem 2rem;
 }
 .cision-ticker ul {
     list-style: none;
+    padding: 0;
 }
 .cision-ticker ul li {
     display: inline-block;
     padding: 10px;
 }
-/*.cision-ticker ul li:last-child {*/
-/*    clear:both;*/
-/*}*/
 .cision-ticker ul li span {
     display: block;
     font-size: 12px;
