@@ -212,7 +212,7 @@ class Plugin extends Singleton
               'serviceEndpoint' => 'https://publish.ne.cision.com/papi/',
               'excludeCss' => false,
               'backgroundColor' => '#ffffff',
-              'noBackground' => fasle,
+              'noBackground' => false,
               'labelBaseStock' => __('stamaktie', self::TEXT_DOMAIN),
               'labelPreferenceStock' => __('preferensaktie', self::TEXT_DOMAIN),
               'label' => array(),
