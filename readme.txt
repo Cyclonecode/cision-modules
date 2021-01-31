@@ -13,7 +13,7 @@ This plugin aims to add support for different cision modules.
 
 == Description ==
 
-This plugin aims to add support for different cision modules.
+This plugin can be used to display tickers from Cision.
 
 == Frequently Asked Questions ==
 
