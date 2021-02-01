@@ -1,6 +1,6 @@
 === Cision Modules ===
 Contributors: cyclonecode
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PBTHN3L67QA2S&source=url&lc=US&item_name=Custom+PHP+Settings
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PBTHN3L67QA2S&source=url&lc=US&item_name=Cision+Modules
 Tags: cision, modules, ticker
 Requires at least: 3.1.0
 Tested up to: 5.6
@@ -14,6 +14,13 @@ This plugin aims to add support for different cision modules.
 == Description ==
 
 This plugin can be used to display tickers from Cision.
+
+= Shortcode =
+
+The shortcode **[cision-ticker]** can either be used by adding it to the content field of any post or by using the **do_shortcode** function in one of your templates.
+At the moment the shortcode will only render the associated label with price and currency for each ticker.
+
+If there is other data that you need to display, please contact me and perhaps we can make a small addition for this.
 
 == Frequently Asked Questions ==
 
@@ -35,5 +42,8 @@ You can also try contacting me on [slack](https://join.slack.com/t/cyclonecode/s
 == Upgrade Notice ==
 
 == Screenshots ==
+
+1. A page using data for two tickers fetched from Cision.
+2. The plugin configuration form.
 
 == Changelog ==
