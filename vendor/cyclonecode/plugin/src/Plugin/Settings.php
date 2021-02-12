@@ -171,6 +171,21 @@ class Settings
     }
 
     /**
+     * Get a configuration value from array.
+     *
+     * @param string $name
+     * @param int $index
+     * @return mixed
+     */
+    public function getFromArray($name, $index)
+    {
+        $value = $this->get($name);
+        if (is_array($value) && count($value) >= $index) {
+            return $value[$index];
+        }
+    }
+
+    /**
      * Remove setting.
      *
      * @param string $name

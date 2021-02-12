@@ -79,19 +79,6 @@ if (!is_array($labels) || ($tickers && count($labels) !== count($tickers->Instru
                     <p class="description"><?php echo __('Precision for decimals.', self::TEXT_DOMAIN); ?></p>
                 </td>
             </tr>
-            <?php if ($tickers) : ?>
-            <tr>
-                <th scope="row">
-                    <label for="labels"><?php _e('Labels', self::TEXT_DOMAIN); ?></label>
-                </th>
-                <td>
-                    <?php foreach ($tickers->Instruments as $key => $ticker): ?>
-                        <?php echo $ticker->TickerName; ?>: <br /><input type="text" class="regular-text" name="label[]" value="<?php echo $labels[$key] ?>" /><br />
-                    <?php endforeach; ?>
-                    <p class="description"><?php echo __('Ticker labels.', self::TEXT_DOMAIN); ?></p>
-                </td>
-            </tr>
-            <?php endif; ?>
             <!--
             <tr>
                 <th scope="row">
@@ -140,6 +127,22 @@ if (!is_array($labels) || ($tickers && count($labels) !== count($tickers->Instru
                 </td>
             </tr>
         </table>
+        <?php if ($tickers) : ?>
+            <table class="form-table">
+                <tr>
+                    <th scope="col"><?php echo __('Name of ticker', self::TEXT_DOMAIN); ?></th>
+                    <th scope="col"><?php echo __('Enabled', self::TEXT_DOMAIN); ?></th>
+                    <th scope="col"><?php echo __('Label', self::TEXT_DOMAIN); ?></th>
+                </tr>
+                <?php foreach ($tickers->Instruments as $key => $ticker): ?>
+                    <tr>
+                        <th width="35%" scope="row"><?php echo $ticker->TickerName; ?></th>
+                        <td width="10%" style="padding:0"><input type="hidden" name="enable[<?php echo $key; ?>]" id="enable_hidden_<?php echo $key; ?>" value="0" /><input type="checkbox" name="enable[<?php echo $key; ?>]"<?php checked($this->settings->getFromArray('enable', $key)); ?>/></td>
+                        <td width="55%" style="padding:0"><input type="text" class="regular-text" name="label[]" value="<?php echo $labels[$key] ?>" /></td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        <?php endif; ?>
         <?php echo get_submit_button(__('Save settings', self::TEXT_DOMAIN), 'primary', 'cision-modules'); ?>
     </form>
 </div>

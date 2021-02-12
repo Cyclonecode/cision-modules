@@ -4,9 +4,9 @@
  * Plugin Name: Cision Modules
  * Plugin URI: https://wordpress.org/plugins/cision-modules/
  * Description: Cision client modules.
- * Version: 1.0.0
- * Requires at least: 3.1.0
- * Requires PHP: 5.4
+ * Version: 1.0.1
+ * Requires at least: 4.0.0
+ * Requires PHP: 7.1
  * Author: Cyclonecode
  * Author URI: https://stackoverflow.com/users/1047662/cyclonecode?tab=profile
  * Copyright: Cyclonecode
@@ -22,8 +22,6 @@
 namespace CisionModules;
 
 require_once __DIR__ . '/vendor/autoload.php';
-
-use CisionModules\Plugin;
 
 add_action('plugins_loaded', function () {
     Plugin::getInstance();

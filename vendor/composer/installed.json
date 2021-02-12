@@ -153,20 +153,20 @@
         },
         {
             "name": "cyclonecode/plugin",
-            "version": "1.0.2",
-            "version_normalized": "1.0.2.0",
+            "version": "1.0.3",
+            "version_normalized": "1.0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyclonecode/Plugin.git",
-                "reference": "c181404037ad0ff70fb10db443d0857e78d09de8"
+                "reference": "198facda87a9f73b7ce4ca418f2cf88b431d83f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyclonecode/Plugin/zipball/c181404037ad0ff70fb10db443d0857e78d09de8",
-                "reference": "c181404037ad0ff70fb10db443d0857e78d09de8",
+                "url": "https://api.github.com/repos/Cyclonecode/Plugin/zipball/198facda87a9f73b7ce4ca418f2cf88b431d83f2",
+                "reference": "198facda87a9f73b7ce4ca418f2cf88b431d83f2",
                 "shasum": ""
             },
-            "time": "2021-01-25T00:00:00+00:00",
+            "time": "2021-02-12T00:00:00+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {

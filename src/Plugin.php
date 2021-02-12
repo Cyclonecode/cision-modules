@@ -7,7 +7,7 @@ use Cyclonecode\Plugin\Settings;
 
 class Plugin extends Singleton
 {
-    const VERSION = '1.0.0';
+    const VERSION = '1.0.1';
     const SETTINGS_NAME = 'cision_modules';
     const TEXT_DOMAIN = 'cision-modules';
     const PARENT_MENU_SLUG = 'tools.php';
@@ -91,6 +91,7 @@ class Plugin extends Singleton
             <div class="cision-ticker"<?php if(!$this->settings->get('excludeCss') && !$this->settings->get('noBackground')) : ?> style="background-color: <?php echo $this->settings->get('backgroundColor'); ?>"<?php endif; ?>>
                 <ul>
                     <?php foreach ($tickers->Instruments as $key => $ticker) : ?>
+                    <?php if ($this->settings->getFromArray('enable', $key)) : ?>
                     <li>
                         <?php echo number_format(
                                 $ticker->Quotes[0]->Price,
@@ -100,12 +101,7 @@ class Plugin extends Singleton
                         ); ?> <?php echo $ticker->TradeCurrency; ?>
                         <span><?php echo $this->settings->get('label')[$key]; ?></span>
                     </li>
-<!--                        --><?php //if ($this->settings->get('displayVolume')) : ?>
-<!--                            <li>-->
-<!--                                --><?php //echo $ticker->Quotes[0]->Quantity; ?>
-<!--                                <span>--><?php //echo __('Volume', self::TEXT_DOMAIN); ?><!--</span>-->
-<!--                            </li>-->
-<!--                        --><?php //endif; ?>
+                    <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -213,9 +209,8 @@ class Plugin extends Singleton
               'excludeCss' => false,
               'backgroundColor' => '#ffffff',
               'noBackground' => false,
-              'labelBaseStock' => __('stamaktie', self::TEXT_DOMAIN),
-              'labelPreferenceStock' => __('preferensaktie', self::TEXT_DOMAIN),
               'label' => array(),
+              'enable' => array(),
               'displayVolume' => false
             );
 
@@ -318,89 +313,93 @@ class Plugin extends Singleton
                 die(__('You are not allowed to perform this action.', self::TEXT_DOMAIN));
             }
             // Verify nonce and referer.
-            if (check_admin_referer('cision-modules-action', 'cision-modules-nonce')) {
-                // Filter and sanitize form values.
-                $this->settings->apiKey = filter_input(INPUT_POST, 'apiKey', FILTER_SANITIZE_STRING);
-                $this->settings->serviceEndpoint = filter_input(INPUT_POST, 'serviceEndpoint', FILTER_SANITIZE_URL);
-                $this->settings->cacheTTL = filter_input(
-                    INPUT_POST,
-                    'cacheTTL',
-                    FILTER_VALIDATE_INT,
-                    array(
+            check_admin_referer('cision-modules-action', 'cision-modules-nonce');
+            // Filter and sanitize form values.
+            $this->settings->apiKey = filter_input(INPUT_POST, 'apiKey', FILTER_SANITIZE_STRING);
+            $this->settings->serviceEndpoint = filter_input(INPUT_POST, 'serviceEndpoint', FILTER_SANITIZE_URL);
+            $this->settings->cacheTTL = filter_input(
+                INPUT_POST,
+                'cacheTTL',
+                FILTER_VALIDATE_INT,
+                array(
+                    'options' => array(
+                        'min_range' => 1,
+                        'default' => 300,
+                    )
+                )
+            );
+            $this->settings->dateFormatOptions = filter_input(
+                INPUT_POST,
+                'dateFormatOptions',
+                FILTER_VALIDATE_REGEXP,
+                array(
                         'options' => array(
-                            'min_range' => 1,
-                            'default' => 300,
+                            'regex' => '//',
                         )
-                    )
-                );
-                $this->settings->dateFormatOptions = filter_input(
+                )
+            );
+            $this->settings->decimalSeparator = filter_input(
+                INPUT_POST,
+                'decimalSeparator',
+                FILTER_SANITIZE_STRING
+            );
+            $this->settings->thousandSeparator = filter_input(
+                INPUT_POST,
+                'thousandSeparator',
+                FILTER_SANITIZE_STRING
+            );
+            $this->settings->decimalPrecision = filter_input(
+                INPUT_POST,
+                'decimalPrecision',
+                FILTER_VALIDATE_INT,
+                array(
+                        'options' => array(
+                                'min_range' => 0,
+                                'default' => 0,
+                        ),
+                )
+            );
+            $this->settings->excludeCss = filter_input(
+                INPUT_POST,
+                'excludeCss',
+                FILTER_VALIDATE_BOOLEAN
+            );
+            $this->settings->noBackground = filter_input(
                     INPUT_POST,
-                    'dateFormatOptions',
-                    FILTER_VALIDATE_REGEXP,
-                    array(
-                            'options' => array(
-                                'regex' => '//',
-                            )
-                    )
-                );
-                $this->settings->decimalSeparator = filter_input(
+                'noBackground',
+                FILTER_VALIDATE_BOOLEAN
+            );
+            $this->settings->backgroundColor = filter_input(
+                INPUT_POST,
+                'backgroundColor',
+                FILTER_VALIDATE_REGEXP,
+                array(
+                        'options' => array(
+                                'regexp' => '/\#[a-fA-F0-9]{6}/',
+                        )
+                )
+            );
+            $this->settings->label = filter_input(
+                INPUT_POST,
+                'label',
+                FILTER_SANITIZE_STRING,
+                FILTER_REQUIRE_ARRAY
+            );
+            $this->settings->enable = filter_input(
+                INPUT_POST,
+                'enable',
+                FILTER_VALIDATE_BOOLEAN,
+                FILTER_REQUIRE_ARRAY
+            );
+            $this->settings->displayVolume = filter_input(
                     INPUT_POST,
-                    'decimalSeparator',
-                    FILTER_SANITIZE_STRING
-                );
-                $this->settings->thousandSeparator = filter_input(
-                    INPUT_POST,
-                    'thousandSeparator',
-                    FILTER_SANITIZE_STRING
-                );
-                $this->settings->decimalPrecision = filter_input(
-                    INPUT_POST,
-                    'decimalPrecision',
-                    FILTER_VALIDATE_INT,
-                    array(
-                            'options' => array(
-                                    'min_range' => 0,
-                                    'default' => 0,
-                            ),
-                    )
-                );
-                $this->settings->excludeCss = filter_input(
-                    INPUT_POST,
-                    'excludeCss',
-                    FILTER_VALIDATE_BOOLEAN
-                );
-                $this->settings->noBackground = filter_input(
-                        INPUT_POST,
-                    'noBackground',
-                    FILTER_VALIDATE_BOOLEAN
-                );
-                $this->settings->backgroundColor = filter_input(
-                    INPUT_POST,
-                    'backgroundColor',
-                    FILTER_VALIDATE_REGEXP,
-                    array(
-                            'options' => array(
-                                    'regexp' => '/\#[a-fA-F0-9]{6}/',
-                            )
-                    )
-                );
-                // var_dump($_POST['label']);exit;
-                $this->settings->label = filter_input(
-                    INPUT_POST,
-                    'label',
-                    FILTER_SANITIZE_STRING,
-                    FILTER_REQUIRE_ARRAY
-                );
-                $this->settings->displayVolume = filter_input(
-                        INPUT_POST,
-                    'displayVolume',
-                    FILTER_VALIDATE_BOOLEAN
-                );
-                delete_transient('cision_modules_ticker');
-                $this->settings->save();
+                'displayVolume',
+                FILTER_VALIDATE_BOOLEAN
+            );
+            delete_transient('cision_modules_ticker');
+            $this->settings->save();
 
-                wp_safe_redirect(admin_url(self::PARENT_MENU_SLUG . '?page=' . self::MENU_SLUG));
-            }
+            wp_safe_redirect(admin_url(self::PARENT_MENU_SLUG . '?page=' . self::MENU_SLUG));
         }
     }
 

@@ -1,8 +1,8 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '1.0.0',
-    'version' => '1.0.0.0',
+    'pretty_version' => '1.0.1',
+    'version' => '1.0.1.0',
     'aliases' => 
     array (
     ),
@@ -22,8 +22,8 @@
     ),
     'cyclonecode/cision-modules' => 
     array (
-      'pretty_version' => '1.0.0',
-      'version' => '1.0.0.0',
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
       'aliases' => 
       array (
       ),
@@ -31,12 +31,12 @@
     ),
     'cyclonecode/plugin' => 
     array (
-      'pretty_version' => '1.0.2',
-      'version' => '1.0.2.0',
+      'pretty_version' => '1.0.3',
+      'version' => '1.0.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'c181404037ad0ff70fb10db443d0857e78d09de8',
+      'reference' => '198facda87a9f73b7ce4ca418f2cf88b431d83f2',
     ),
     'roundcube/plugin-installer' => 
     array (

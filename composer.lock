@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eea940047e3bc77a9e19475805b71660",
+    "content-hash": "6a4220dee4854b6bf1129b1c5c6d9832",
     "packages": [
         {
             "name": "composer/installers",
@@ -156,16 +156,16 @@
         },
         {
             "name": "cyclonecode/plugin",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Cyclonecode/Plugin.git",
-                "reference": "c181404037ad0ff70fb10db443d0857e78d09de8"
+                "reference": "198facda87a9f73b7ce4ca418f2cf88b431d83f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Cyclonecode/Plugin/zipball/c181404037ad0ff70fb10db443d0857e78d09de8",
-                "reference": "c181404037ad0ff70fb10db443d0857e78d09de8",
+                "url": "https://api.github.com/repos/Cyclonecode/Plugin/zipball/198facda87a9f73b7ce4ca418f2cf88b431d83f2",
+                "reference": "198facda87a9f73b7ce4ca418f2cf88b431d83f2",
                 "shasum": ""
             },
             "type": "library",
@@ -201,7 +201,7 @@
                 "issues": "https://github.com/Cyclonecode/Plugin/issues",
                 "source": "https://github.com/Cyclonecode/Plugin"
             },
-            "time": "2021-01-25T00:00:00+00:00"
+            "time": "2021-02-12T00:00:00+00:00"
         }
     ],
     "packages-dev": [
@@ -268,7 +268,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4"
+        "php": ">=7.1"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
