@@ -4,3 +4,4 @@ vendor/*
 !vendor/autoload.php
 !vendor/composer
 !vendor/cyclonecode
+vendor/composer/installers/*
