@@ -210,7 +210,7 @@ class Plugin extends Singleton
               'backgroundColor' => '#ffffff',
               'noBackground' => false,
               'label' => [],
-              'enable' => [],
+              'enable' => [true, true, true],
               'displayVolume' => false
             ];
 
