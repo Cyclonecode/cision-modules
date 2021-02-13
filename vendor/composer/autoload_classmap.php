@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'CisionModules\\Plugin' => $baseDir . '/src/Plugin.php',
+    'CisionModules\\Plugin\\Settings' => $baseDir . '/src/Plugin/Settings.php',
+    'CisionModules\\Plugin\\Singleton' => $baseDir . '/src/Plugin/Singleton.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Composer\\Installers\\AglInstaller' => $vendorDir . '/composer/installers/src/Composer/Installers/AglInstaller.php',
     'Composer\\Installers\\AimeosInstaller' => $vendorDir . '/composer/installers/src/Composer/Installers/AimeosInstaller.php',
@@ -106,7 +108,4 @@ return array(
     'Composer\\Installers\\YawikInstaller' => $vendorDir . '/composer/installers/src/Composer/Installers/YawikInstaller.php',
     'Composer\\Installers\\ZendInstaller' => $vendorDir . '/composer/installers/src/Composer/Installers/ZendInstaller.php',
     'Composer\\Installers\\ZikulaInstaller' => $vendorDir . '/composer/installers/src/Composer/Installers/ZikulaInstaller.php',
-    'Cyclonecode\\Plugin\\Settings' => $vendorDir . '/cyclonecode/plugin/src/Plugin/Settings.php',
-    'Cyclonecode\\Plugin\\Singleton' => $vendorDir . '/cyclonecode/plugin/src/Plugin/Singleton.php',
-    'Cyclonecode\\Plugin\\Widget' => $vendorDir . '/cyclonecode/plugin/src/Plugin/Widget.php',
 );

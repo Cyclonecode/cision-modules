@@ -1,16 +1,16 @@
 <?php
 
-namespace Cyclonecode\Plugin;
+namespace CisionModules\Plugin;
 
 abstract class Singleton
 {
     /**
      * @var array $instance
      */
-    protected static $instance = array();
+    protected static $instance = [];
 
     /**
-     * @return \Cyclonecode\Plugin\Singleton|null
+     * @return \CisionModules\Plugin\Singleton|null
      */
     final public static function getInstance()
     {
@@ -36,7 +36,7 @@ abstract class Singleton
     {
     }
 
-    protected function init()
+    protected function init(): void
     {
     }
 }

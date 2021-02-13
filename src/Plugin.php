@@ -2,16 +2,16 @@
 
 namespace CisionModules;
 
-use Cyclonecode\Plugin\Singleton;
-use Cyclonecode\Plugin\Settings;
+use CisionModules\Plugin\Singleton;
+use CisionModules\Plugin\Settings;
 
 class Plugin extends Singleton
 {
-    const VERSION = '1.0.1';
-    const SETTINGS_NAME = 'cision_modules';
-    const TEXT_DOMAIN = 'cision-modules';
-    const PARENT_MENU_SLUG = 'tools.php';
-    const MENU_SLUG = 'cision-modules';
+    public const VERSION = '1.0.1';
+    public const SETTINGS_NAME = 'cision_modules';
+    public const TEXT_DOMAIN = 'cision-modules';
+    private const PARENT_MENU_SLUG = 'tools.php';
+    private const MENU_SLUG = 'cision-modules';
 
     /**
      *
@@ -27,7 +27,7 @@ class Plugin extends Singleton
     /**
      *
      */
-    public function init()
+    public function init(): void
     {
         // Allow people to change what capability is required to use this plugin.
         $this->capability = apply_filters('cision_modules_cap', $this->capability);
@@ -43,7 +43,7 @@ class Plugin extends Singleton
     /**
      * Localize plugin.
      */
-    protected function localize()
+    protected function localize(): void
     {
         load_plugin_textdomain(self::TEXT_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
@@ -51,35 +51,35 @@ class Plugin extends Singleton
     /**
      * Add actions.
      */
-    public function addActions()
+    public function addActions(): void
     {
         if (is_admin()) {
-            add_action('admin_menu', array($this, 'addMenu'));
-            add_action('admin_post_cision_modules_save_settings', array($this, 'saveSettings'));
+            add_action('admin_menu', [$this, 'addMenu']);
+            add_action('admin_post_cision_modules_save_settings', [$this, 'saveSettings']);
         } else {
-            add_shortcode('cision-ticker', array($this, 'doTicker'));
-            add_action('wp_enqueue_scripts', array($this, 'addFrontendScripts'));
+            add_shortcode('cision-ticker', [$this, 'doTicker']);
+            add_action('wp_enqueue_scripts', [$this, 'addFrontendScripts']);
         }
     }
 
     /**
      * Add filters.
      */
-    public function addFilters()
+    public function addFilters(): void
     {
         if (is_admin()) {
-            add_filter('admin_footer_text', array($this, 'adminFooter'));
-            add_filter('plugin_action_links', array($this, 'addActionLinks'), 10, 2);
-            add_filter('plugin_row_meta', array($this, 'filterPluginRowMeta'), 10, 4);
+            add_filter('admin_footer_text', [$this, 'adminFooter']);
+            add_filter('plugin_action_links', [$this, 'addActionLinks'], 10, 2);
+            add_filter('plugin_row_meta', [$this, 'filterPluginRowMeta'], 10, 4);
         }
     }
 
     /**
      * Display ticker.
      *
-     * @param $args
+     * @param string $args
      */
-    public function doTicker($args)
+    public function doTicker(string $args): void
     {
         if (!$this->settings->get('excludeCss')) {
             wp_enqueue_style('frontend');
@@ -88,20 +88,25 @@ class Plugin extends Singleton
         ob_start();
         ?>
         <div class="cision-ticker-wrapper">
-            <div class="cision-ticker"<?php if(!$this->settings->get('excludeCss') && !$this->settings->get('noBackground')) : ?> style="background-color: <?php echo $this->settings->get('backgroundColor'); ?>"<?php endif; ?>>
+            <div
+                class="cision-ticker"
+                <?php if (!$this->settings->get('excludeCss') && !$this->settings->get('noBackground')) : ?>
+                style="background-color: <?php echo $this->settings->get('backgroundColor'); ?>"
+                <?php endif; ?>
+            >
                 <ul>
                     <?php foreach ($tickers->Instruments as $key => $ticker) : ?>
-                    <?php if ($this->settings->getFromArray('enable', $key)) : ?>
+                        <?php if ($this->settings->getFromArray('enable', $key)) : ?>
                     <li>
-                        <?php echo number_format(
+                            <?php echo number_format(
                                 $ticker->Quotes[0]->Price,
                                 $this->settings->get('decimalPrecision'),
                                 $this->settings->get('decimalSeparator'),
                                 $this->settings->get('thousandSeparator')
-                        ); ?> <?php echo $ticker->TradeCurrency; ?>
+                            ); ?> <?php echo $ticker->TradeCurrency; ?>
                         <span><?php echo $this->settings->get('label')[$key]; ?></span>
                     </li>
-                    <?php endif; ?>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -115,11 +120,13 @@ class Plugin extends Singleton
      *
      * @return mixed|null
      */
-    protected function getTickers()
+    protected function getTickers(): ?object
     {
         $data = get_transient('cision_modules_ticker');
         if (!$data) {
-            $response = wp_safe_remote_request(trailingslashit($this->settings->get('serviceEndpoint')) . 'Ticker/' . $this->settings->get('apiKey'));
+            $response = wp_safe_remote_request(
+                trailingslashit($this->settings->get('serviceEndpoint')) . 'Ticker/' . $this->settings->get('apiKey')
+            );
             if (!is_wp_error($response) && ($code = wp_remote_retrieve_response_code($response)) && $code === 200 || $code === 201) {
                 $data = wp_remote_retrieve_body($response);
                 set_transient('cision_modules_ticker', $data, $this->settings->get('cacheTTL'));
@@ -127,7 +134,7 @@ class Plugin extends Singleton
                 $data = null;
             }
         }
-        return $data ? json_decode($data) : null;
+        return json_decode($data);
     }
 
     /**
@@ -136,9 +143,9 @@ class Plugin extends Singleton
      * @param array $links
      * @param string $file
      *
-     * @return mixed
+     * @return array
      */
-    public function addActionLinks($links, $file)
+    public function addActionLinks(array $links, string $file): array
     {
         $settings_link = '<a href="' . admin_url(self::PARENT_MENU_SLUG . '?page=' . self::MENU_SLUG) . '">' .
             __('Settings', self::TEXT_DOMAIN) .
@@ -158,7 +165,7 @@ class Plugin extends Singleton
      * @param string   $plugin_file Path to the plugin file relative to the plugins directory.
      * @return string[] An array of the plugin's metadata.
      */
-    public function filterPluginRowMeta(array $plugin_meta, $plugin_file)
+    public function filterPluginRowMeta(array $plugin_meta, string $plugin_file): array
     {
         if ($plugin_file !== 'cision-modules/bootstrap.php') {
             return $plugin_meta;
@@ -173,33 +180,26 @@ class Plugin extends Singleton
         return $plugin_meta;
     }
 
-    public function addFrontendScripts($hook)
+    /**
+     * Add stylesheet.
+     */
+    public function addFrontendScripts(): void
     {
         wp_register_style(
             'frontend',
             plugin_dir_url(__FILE__) . 'css/frontend.css',
-            array(),
+            [],
             self::VERSION
         );
     }
 
     /**
-     * Add scripts.
-     */
-    public function addScripts($hook)
-    {
-        if ($hook !== 'tools_page_cision-modules') {
-            return;
-        }
-    }
-
-    /**
      * Check if any updates needs to be performed.
      */
-    public function checkForUpgrade()
+    public function checkForUpgrade(): void
     {
         if (version_compare($this->settings->get('version'), self::VERSION, '<')) {
-            $defaults = array(
+            $defaults = [
               'decimalPrecision' => 2,
               'decimalSeparator' => '.',
               'thousandSeparator' => '.',
@@ -209,10 +209,10 @@ class Plugin extends Singleton
               'excludeCss' => false,
               'backgroundColor' => '#ffffff',
               'noBackground' => false,
-              'label' => array(),
-              'enable' => array(),
+              'label' => [],
+              'enable' => [],
               'displayVolume' => false
-            );
+            ];
 
             // Set defaults.
             foreach ($defaults as $key => $value) {
@@ -226,21 +226,21 @@ class Plugin extends Singleton
     /**
      * Triggered when plugin is activated.
      */
-    public static function activate()
+    public static function activate(): void
     {
     }
 
     /**
      * Triggered when plugin is deactivated.
      */
-    public static function deActivate()
+    public static function deActivate(): void
     {
     }
 
     /**
      * Uninstalls the plugin.
      */
-    public static function delete()
+    public static function delete(): void
     {
         delete_option(self::SETTINGS_NAME);
         delete_transient('cision_modules_ticker');
@@ -254,7 +254,7 @@ class Plugin extends Singleton
      *
      * @return string
      */
-    public function adminFooter($footer_text)
+    public function adminFooter(string $footer_text): string
     {
         $screen = get_current_screen();
         if ($screen->id === 'tools_page_cision-modules') {
@@ -273,7 +273,7 @@ class Plugin extends Singleton
     /**
      * Add menu item for plugin.
      */
-    public function addMenu()
+    public function addMenu(): void
     {
         add_submenu_page(
             self::PARENT_MENU_SLUG,
@@ -281,7 +281,7 @@ class Plugin extends Singleton
             __('Cision modules', self::TEXT_DOMAIN),
             $this->capability,
             self::MENU_SLUG,
-            array($this, 'doSettingsPage')
+            [$this, 'doSettingsPage']
         );
     }
 
@@ -291,7 +291,7 @@ class Plugin extends Singleton
      * @param string $message
      * @param string $type
      */
-    protected function addSettingsMessage($message, $type = 'error')
+    protected function addSettingsMessage(string $message, $type = 'error'): void
     {
         add_settings_error(
             'cision-modules',
@@ -304,7 +304,7 @@ class Plugin extends Singleton
     /**
      * Handle form data for configuration page.
      */
-    public function saveSettings()
+    public function saveSettings(): void
     {
         // Check if settings form is submitted.
         if (filter_input(INPUT_POST, 'cision-modules', FILTER_SANITIZE_STRING)) {
@@ -321,22 +321,22 @@ class Plugin extends Singleton
                 INPUT_POST,
                 'cacheTTL',
                 FILTER_VALIDATE_INT,
-                array(
-                    'options' => array(
+                [
+                    'options' => [
                         'min_range' => 1,
                         'default' => 300,
-                    )
-                )
+                    ],
+                ]
             );
             $this->settings->dateFormatOptions = filter_input(
                 INPUT_POST,
                 'dateFormatOptions',
                 FILTER_VALIDATE_REGEXP,
-                array(
-                        'options' => array(
+                [
+                        'options' => [
                             'regex' => '//',
-                        )
-                )
+                        ],
+                ]
             );
             $this->settings->decimalSeparator = filter_input(
                 INPUT_POST,
@@ -352,12 +352,12 @@ class Plugin extends Singleton
                 INPUT_POST,
                 'decimalPrecision',
                 FILTER_VALIDATE_INT,
-                array(
-                        'options' => array(
+                [
+                        'options' => [
                                 'min_range' => 0,
                                 'default' => 0,
-                        ),
-                )
+                        ],
+                ]
             );
             $this->settings->excludeCss = filter_input(
                 INPUT_POST,
@@ -365,7 +365,7 @@ class Plugin extends Singleton
                 FILTER_VALIDATE_BOOLEAN
             );
             $this->settings->noBackground = filter_input(
-                    INPUT_POST,
+                INPUT_POST,
                 'noBackground',
                 FILTER_VALIDATE_BOOLEAN
             );
@@ -373,11 +373,11 @@ class Plugin extends Singleton
                 INPUT_POST,
                 'backgroundColor',
                 FILTER_VALIDATE_REGEXP,
-                array(
-                        'options' => array(
+                [
+                        'options' => [
                                 'regexp' => '/\#[a-fA-F0-9]{6}/',
-                        )
-                )
+                        ],
+                ]
             );
             $this->settings->label = filter_input(
                 INPUT_POST,
@@ -392,7 +392,7 @@ class Plugin extends Singleton
                 FILTER_REQUIRE_ARRAY
             );
             $this->settings->displayVolume = filter_input(
-                    INPUT_POST,
+                INPUT_POST,
                 'displayVolume',
                 FILTER_VALIDATE_BOOLEAN
             );
@@ -406,7 +406,7 @@ class Plugin extends Singleton
     /**
      * Display the settings page.
      */
-    public function doSettingsPage()
+    public function doSettingsPage(): void
     {
         // Display any settings messages
         $setting_errors = get_transient('cision_modules_settings_errors');

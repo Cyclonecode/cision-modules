@@ -1,6 +1,6 @@
 <?php
 
-namespace Cyclonecode\Plugin;
+namespace CisionModules\Plugin;
 
 class Settings
 {
@@ -17,21 +17,21 @@ class Settings
      *
      * @var array $settings
      */
-    protected $settings = array();
+    protected $settings = [];
 
     /**
      * Version
      *
      * @var string
      */
-    public $version = '1.0.0';
+    public $version = '1.0.3';
 
     /**
      * Settings constructor.
      *
      * @param string $optionName
      */
-    public function __construct($optionName)
+    public function __construct(string $optionName)
     {
         $this->optionName = $optionName;
         $this->load();
@@ -40,23 +40,23 @@ class Settings
     /**
      * @return array
      */
-    public function toOptionsArray()
+    public function toOptionsArray(): array
     {
         return $this->settings;
     }
 
     /**
-     * @return false|string
+     * @return null|string
      */
-    public function toJSON()
+    public function toJSON(): ?string
     {
         return function_exists('json_encode') ? json_encode($this->toOptionsArray(), JSON_PRETTY_PRINT) : '';
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function toYaml()
+    public function toYaml(): ?string
     {
         return function_exists('yaml_emit') ? yaml_emit($this->settings) : '';
     }
@@ -66,7 +66,7 @@ class Settings
      *
      * @return string
      */
-    public function getOptionName()
+    public function getOptionName(): string
     {
         return $this->optionName;
     }
@@ -76,7 +76,7 @@ class Settings
      *
      * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         return $this->version;
     }
@@ -84,10 +84,10 @@ class Settings
     /**
      * Delete this setting from database.
      */
-    public function delete()
+    public function delete(): void
     {
         delete_option($this->optionName);
-        $this->settings = array();
+        $this->settings = [];
     }
 
     /**
@@ -99,7 +99,7 @@ class Settings
      * @param mixed $value
      *   The value to set.
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value): void
     {
         $this->set($name, $value);
     }
@@ -112,7 +112,7 @@ class Settings
      * @param mixed $value
      *   The value to set.
      */
-    public function set($name, $value)
+    public function set(string $name, $value): void
     {
         $this->settings[$name] = $value;
     }
@@ -122,7 +122,7 @@ class Settings
      *
      * @param array $settings
      */
-    public function setFromArray(array $settings)
+    public function setFromArray(array $settings): void
     {
         foreach ($settings as $key => $value) {
             $this->set($key, $value);
@@ -137,7 +137,7 @@ class Settings
      * @param mixed $value
      *   Value to add.
      */
-    public function add($name, $value)
+    public function add(string $name, $value): void
     {
         if (!isset($this->settings[$name])) {
             $this->set($name, $value);
@@ -152,7 +152,7 @@ class Settings
      *
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return $this->get($name);
     }
@@ -165,7 +165,7 @@ class Settings
      *
      * @return mixed
      */
-    public function get($name)
+    public function get(string $name)
     {
         return (isset($this->settings[$name]) ? $this->settings[$name] : null);
     }
@@ -177,7 +177,7 @@ class Settings
      * @param int $index
      * @return mixed
      */
-    public function getFromArray($name, $index)
+    public function getFromArray(string $name, int $index)
     {
         $value = $this->get($name);
         if (is_array($value) && count($value) >= $index) {
@@ -191,7 +191,7 @@ class Settings
      * @param string $name
      *   Name of setting to remove.
      */
-    public function remove($name)
+    public function remove(string $name)
     {
         unset($this->settings[$name]);
     }
@@ -204,7 +204,7 @@ class Settings
      * @param string $to
      *   New name for setting.
      */
-    public function rename($from, $to)
+    public function rename(string $from, string $to): void
     {
         if (isset($this->settings[$from])) {
             $this->settings[$to] = $this->settings[$from];
@@ -215,7 +215,7 @@ class Settings
     /**
      * Load settings from database.
      */
-    public function load()
+    public function load(): void
     {
         $this->settings = get_option($this->optionName);
     }
@@ -225,7 +225,7 @@ class Settings
      *
      * @return bool
      */
-    public function save()
+    public function save(): bool
     {
         ksort($this->settings);
         return update_option($this->optionName, $this->settings);
@@ -237,7 +237,7 @@ class Settings
      * @param array $options
      *   An array which keys will be used to validate the current settings keys.
      */
-    public function clean(array $options)
+    public function clean(array $options): void
     {
         if (is_array($options)) {
             foreach ($options as $key => $value) {

@@ -134,7 +134,7 @@ if (!is_array($labels) || ($tickers && count($labels) !== count($tickers->Instru
                     <th scope="col"><?php echo __('Enabled', self::TEXT_DOMAIN); ?></th>
                     <th scope="col"><?php echo __('Label', self::TEXT_DOMAIN); ?></th>
                 </tr>
-                <?php foreach ($tickers->Instruments as $key => $ticker): ?>
+                <?php foreach ($tickers->Instruments as $key => $ticker) : ?>
                     <tr>
                         <th width="35%" scope="row"><?php echo $ticker->TickerName; ?></th>
                         <td width="10%" style="padding:0"><input type="hidden" name="enable[<?php echo $key; ?>]" id="enable_hidden_<?php echo $key; ?>" value="0" /><input type="checkbox" name="enable[<?php echo $key; ?>]"<?php checked($this->settings->getFromArray('enable', $key)); ?>/></td>

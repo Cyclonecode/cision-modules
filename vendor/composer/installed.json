@@ -150,58 +150,6 @@
                 }
             ],
             "install-path": "./installers"
-        },
-        {
-            "name": "cyclonecode/plugin",
-            "version": "1.0.3",
-            "version_normalized": "1.0.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Cyclonecode/Plugin.git",
-                "reference": "198facda87a9f73b7ce4ca418f2cf88b431d83f2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Cyclonecode/Plugin/zipball/198facda87a9f73b7ce4ca418f2cf88b431d83f2",
-                "reference": "198facda87a9f73b7ce4ca418f2cf88b431d83f2",
-                "shasum": ""
-            },
-            "time": "2021-02-12T00:00:00+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Cyclonecode\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Cyclonecode",
-                    "email": "cyclonecode@gmail.com",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Class for use when building wordpress plugins.",
-            "homepage": "https://github.com/Cyclonecode/Plugin/",
-            "keywords": [
-                "Settings",
-                "components",
-                "plugin",
-                "singleton",
-                "widget",
-                "wordpress"
-            ],
-            "support": {
-                "chat": "https://join.slack.com/t/cyclonecode/shared_invite/zt-6bdtbdab-n9QaMLM~exHP19zFDPN~AQ",
-                "email": "cyclonecode.help@gmail.com",
-                "issues": "https://github.com/Cyclonecode/Plugin/issues",
-                "source": "https://github.com/Cyclonecode/Plugin"
-            },
-            "install-path": "../cyclonecode/plugin"
         }
     ],
     "dev": false,

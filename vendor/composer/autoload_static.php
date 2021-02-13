@@ -4,22 +4,17 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit72799326820be95469da2a561fbfdfd6
+class ComposerStaticInita1f982d96646b5b040d0387b4d016bec
 {
     public static $prefixLengthsPsr4 = array (
         'C' => 
         array (
-            'Cyclonecode\\' => 12,
             'Composer\\Installers\\' => 20,
             'CisionModules\\' => 14,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Cyclonecode\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/cyclonecode/plugin/src',
-        ),
         'Composer\\Installers\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
@@ -32,6 +27,8 @@ class ComposerStaticInit72799326820be95469da2a561fbfdfd6
 
     public static $classMap = array (
         'CisionModules\\Plugin' => __DIR__ . '/../..' . '/src/Plugin.php',
+        'CisionModules\\Plugin\\Settings' => __DIR__ . '/../..' . '/src/Plugin/Settings.php',
+        'CisionModules\\Plugin\\Singleton' => __DIR__ . '/../..' . '/src/Plugin/Singleton.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Composer\\Installers\\AglInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/AglInstaller.php',
         'Composer\\Installers\\AimeosInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/AimeosInstaller.php',
@@ -131,17 +128,14 @@ class ComposerStaticInit72799326820be95469da2a561fbfdfd6
         'Composer\\Installers\\YawikInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/YawikInstaller.php',
         'Composer\\Installers\\ZendInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ZendInstaller.php',
         'Composer\\Installers\\ZikulaInstaller' => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers/ZikulaInstaller.php',
-        'Cyclonecode\\Plugin\\Settings' => __DIR__ . '/..' . '/cyclonecode/plugin/src/Plugin/Settings.php',
-        'Cyclonecode\\Plugin\\Singleton' => __DIR__ . '/..' . '/cyclonecode/plugin/src/Plugin/Singleton.php',
-        'Cyclonecode\\Plugin\\Widget' => __DIR__ . '/..' . '/cyclonecode/plugin/src/Plugin/Widget.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit72799326820be95469da2a561fbfdfd6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit72799326820be95469da2a561fbfdfd6::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit72799326820be95469da2a561fbfdfd6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita1f982d96646b5b040d0387b4d016bec::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita1f982d96646b5b040d0387b4d016bec::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInita1f982d96646b5b040d0387b4d016bec::$classMap;
 
         }, null, ClassLoader::class);
     }

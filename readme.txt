@@ -2,9 +2,9 @@
 Contributors: cyclonecode
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PBTHN3L67QA2S&source=url&lc=US&item_name=Cision+Modules
 Tags: cision, modules, ticker
-Requires at least: 3.1.0
+Requires at least: 4.0.0
 Tested up to: 5.6
-Requires PHP: 5.4
+Requires PHP: 7.1
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -36,6 +36,9 @@ You can also try contacting me on [slack](https://join.slack.com/t/cyclonecode/s
 1. Upload custom-post-field to the **/wp-content/plugins/** directory,
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. You can now configure the plugin by going to *wp-admin/tools.php?page=cision-modules*.
+4. Add your API KEY and save the form.
+5. Enable the tickers you would like to use and any label you would like to use.
+6. Save the form.
 
 == Frequently Asked Questions ==
 
@@ -47,3 +50,8 @@ You can also try contacting me on [slack](https://join.slack.com/t/cyclonecode/s
 2. The plugin configuration form.
 
 == Changelog ==
+
+= 1.0.1
+- Removed dependency from composer.json.
+- Refactor for PHP 7.1.
+- Add support to enable specific tickers.

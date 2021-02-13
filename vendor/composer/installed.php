@@ -29,15 +29,6 @@
       ),
       'reference' => NULL,
     ),
-    'cyclonecode/plugin' => 
-    array (
-      'pretty_version' => '1.0.3',
-      'version' => '1.0.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '198facda87a9f73b7ce4ca418f2cf88b431d83f2',
-    ),
     'roundcube/plugin-installer' => 
     array (
       'replaced' => 
